@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicio RESTful API - Rafael Antonio</title>
+    <link rel="shortcut icon" type="image/x-icon"
+        href="https://upload.wikimedia.org/wikipedia/commons/1/1e/RPC-JP_Logo.png" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.11.4/datatables.min.css" />
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark justify-content-end">
+        <div class="container">
+            <div class="collapse navbar-collapse">
+                <a class="navbar-brand mt-2 mt-lg-0 text-white" href="#">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/1/1e/RPC-JP_Logo.png" height="60"
+                        alt="Logo" loading="lazy" />
+                    Ejercicio RESTful API
+                </a>
+            </div>
+
+            <ul class="nav nav-pills" id="pills-tab" role="tablist2">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-GET-tab" data-bs-toggle="pill" data-bs-target="#pills-GET"
+                        type="button" role="tab" aria-controls="pills-profile" aria-selected="false">GET</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-POST-tab" data-bs-toggle="pill" data-bs-target="#pills-POST"
+                        type="button" role="tab" aria-selected="false">POST</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-PUT-tab" data-bs-toggle="pill" data-bs-target="#pills-PUT"
+                        type="button" role="tab" aria-selected="false">PUT</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-DELETE-tab" data-bs-toggle="pill" data-bs-target="#pills-DELETE"
+                        type="button" role="tab" aria-selected="false" onclick="cargarTablaDelete();">DELETE</button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="tab-content" id="pills-tabContent">
+        <div class="container tab-pane fade mt-3" id="pills-GET" role="tabpanel" aria-labelledby="pills-GET-tab">
+            <ul class="nav nav-pills mb-6" id="pills-tab2" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-All-tab" data-bs-toggle="pill" data-bs-target="#pills-All"
+                        type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Todos</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-byId-tab" data-bs-toggle="pill" data-bs-target="#pills-byId"
+                        type="button" role="tab" aria-selected="false">Por Id</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-byCareer-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-byCareer" type="button" role="tab" aria-selected="false">Por
+                        Carrera</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-byStatus-tab" data-bs-toggle="pill"
+                        data-bs-target="#pills-byStatus" type="button" role="tab" aria-selected="false">Por
+                        Status</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade mt-3" id="pills-All" role="tabpanel" aria-labelledby="pills-All-tab">
+                    <div class="row">
+                        <div class="col">
+                            <h2>Alumnos registrados</h2>
+                        </div>
+                        <div class="col">
+                            <select class="form-select" id="selectAll" onchange="obtenerTabla(1);" aria-label="select">
+                                <option disable selected hidden>Selecciona una opcion</option>
+                                <option value="-">Todos</option>
+                                <option value="50">Primeros 50</option>
+                                <option value="100">Primeros 100</option>
+                                <option value="1000">Primeros 1000</option>
+                                <option value="1500">Primeros 1500</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table class="table table-striped table-hover mt-3" id="tablaTodos">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">No. Control</th>
+                                <th scope="col">Nombre completo</th>
+                                <th scope="col">Nacimiento</th>
+                                <th scope="col">Carrera</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Promedio</th>
+                                <th scope="col">Creacion</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade mt-3" id="pills-byId" role="tabpanel" aria-labelledby="pills-byId-tab">
+                    <div class="row">
+                        <div class="col-10">
+                            <div class="mb-3 row">
+                                <label class="col-sm-2 col-form-label">Id:</label>
+                                <div class="col-sm-10">
+                                    <input type="number" class="form-control w-50" placeholder="Id del usuario"
+                                        id="inputSearchId" max="9999" min="1">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <button type="button" class="btn btn-dark w-100" onclick="obtenerPorId();">Buscar</button>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col-4">
+                            <label class="col-4 col-form-label">No. Control</label>
+                            <input id="noControlInput" class="form-control" type="text" readonly>
+                        </div>
+                        <div class="col">
+                            <label class="col-4 col-form-label">Nombre completo</label>
+                            <input id="nombreInput" class="form-control" type="text" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col">
+                            <label class="col-6 col-form-label">Fecha de nacimiento</label>
+                            <input id="nacimientoInput" class="form-control" type="text" readonly>
+                        </div>
+                        <div class="col">
+                            <label class="col-4 col-form-label">Carrera</label>
+                            <input id="careerInput" class="form-control" type="text" readonly>
+                        </div>
+                    </div>
+
+                    <div class="row g-4">
+                        <div class="col">
+                            <label class="col-5 col-form-label">Status</label>
+                            <input id="statusInput" class="form-control" type="text" readonly>
+                        </div>
+                        <div class="col">
+                            <label class="col-4 col-form-label">Promedio</label>
+                            <input id="promedioInput" class="form-control" type="text" readonly>
+                        </div>
+                        <div class="col">
+                            <label class="col-6 col-form-label">Fecha de creacion</label>
+                            <input id="creacionInput" class="form-control" type="text" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade mt-3" id="pills-byCareer" role="tabpanel"
+                    aria-labelledby="pills-byCareer-tab">
+                    <div class="row">
+                        <div class="col">
+                            <h2>Seleccionar carrera</h2>
+                        </div>
+                        <div class="col">
+                            <select class="form-select" id="selectCarrera" onchange="obtenerTabla(2);"
+                                aria-label="select">
+                                <option disable selected hidden>Selecciona una opcion</option>
+                                <option value="INGENIERIA CIVIL">INGENIERIA CIVIL</option>
+                                <option value="INGENIERIA EN GESTION EMPRESARIAL">INGENIERIA EN GESTION EMPRESARIAL
+                                </option>
+                                <option value="INGENIERIA MECANICA">INGENIERIA MECANICA</option>
+                                <option value="INGENIERIA EN SISTEMAS COMPUTACIONALES">INGENIERIA EN SISTEMAS
+                                    COMPUTACIONALES</option>
+                                <option value="INGENIERIA ELECTRICA">INGENIERIA ELECTRICA</option>
+                                <option value="INGENIERIA INDUSTRIAL">INGENIERIA INDUSTRIAL</option>
+                                <option value="INGENIERIA QUIMICA">INGENIERIA QUIMICA</option>
+                                <option value="INGENIERIA ELECTRONICA">INGENIERIA ELECTRONICA</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table class="table table-striped table-hover mt-3" id="tablaCareer">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">No. Control</th>
+                                <th scope="col">Nombre completo</th>
+                                <th scope="col">Nacimiento</th>
+                                <th scope="col">Carrera</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Promedio</th>
+                                <th scope="col">Creacion</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="tab-pane fade mt-3" id="pills-byStatus" role="tabpanel"
+                    aria-labelledby="pills-byStatus-tab">
+                    <div class="row">
+                        <div class="col">
+                            <h2>Seleccionar status</h2>
+                        </div>
+                        <div class="col">
+                            <select class="form-select" id="selectStatus" onchange="obtenerTabla(3);"
+                                aria-label="select">
+                                <option disable selected hidden>Selecciona una opcion</option>
+                                <option value="Activo">Activo</option>
+                                <option value="Activo con 1 especial">Activo con 1 especial</option>
+                                <option value="Activo con especiales">Activo con especiales</option>
+                                <option value="Baja definitiva por alcanzar el número máximo semestres permitido">Baja
+                                    definitiva por alcanzar el número máximo semestres permitido</option>
+                                <option value="Baja definitiva por examen especial reprobado">Baja definitiva por examen
+                                    especial reprobado</option>
+                                <option value="Baja definitiva por no cumplir con requisito de inscripción">Baja
+                                    definitiva por no cumplir con requisito de inscripción</option>
+                                <option value="Baja definitiva por no inscripción a segundo semestre">Baja definitiva
+                                    por no inscripción a segundo semestre</option>
+                                <option value="Baja definitiva por reprobación en primer semestre">Baja definitiva por
+                                    reprobación en primer semestre</option>
+                                <option value="Baja definitiva voluntaria">Baja definitiva voluntaria</option>
+                                <option value="Baja temporal por no inscripción">Baja temporal por no inscripción
+                                </option>
+                                <option value="Baja temporal voluntaria">Baja temporal voluntaria</option>
+                                <option value="Egresado">Egresado</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <table class="table table-striped table-hover mt-3" id="tablaStatus">
+                        <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">No. Control</th>
+                                <th scope="col">Nombre completo</th>
+                                <th scope="col">Nacimiento</th>
+                                <th scope="col">Carrera</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Promedio</th>
+                                <th scope="col">Creacion</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="container tab-pane fade mt-3" id="pills-POST" role="tabpanel" aria-labelledby="pills-POST-tab">
+            <div class="row">
+                <h1>AGREGAR ESTUDIANTE</h1>
+            </div>
+
+            <div class="row g-4">
+                <div class="col">
+                    <label class="col-6 col-form-label">No. Control</label>
+                    <input id="noControlInputPOST" class="form-control" type="number">
+                </div>
+                <div class="col">
+                    <label class="col-4 col-form-label">Nombre(s)</label>
+                    <input id="nombreInputPOST" class="form-control" type="text">
+                </div>
+                <div class="col">
+                    <label class="col-6 col-form-label">Apellido paterno</label>
+                    <input id="paternoInputPOST" class="form-control" type="text">
+                </div>
+                <div class="col">
+                    <label class="col-7 col-form-label">Apellido materno</label>
+                    <input id="maternoInputPOST" class="form-control" type="text">
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col">
+                    <label class="col-6 col-form-label">Fecha de nacimiento</label>
+                    <input id="nacimientoInputPOST" class="form-control" type="date">
+                </div>
+                <div class="col">
+                    <label class="col-4 col-form-label">Carrera</label>
+                    <select class="form-select" id="selectCarreraPOST" aria-label="select">
+                        <option disable selected hidden>Selecciona una opcion</option>
+                        <option value="INGENIERIA CIVIL">INGENIERIA CIVIL</option>
+                        <option value="INGENIERIA EN GESTION EMPRESARIAL">INGENIERIA EN GESTION EMPRESARIAL
+                        </option>
+                        <option value="INGENIERIA MECANICA">INGENIERIA MECANICA</option>
+                        <option value="INGENIERIA EN SISTEMAS COMPUTACIONALES">INGENIERIA EN SISTEMAS
+                            COMPUTACIONALES</option>
+                        <option value="INGENIERIA ELECTRICA">INGENIERIA ELECTRICA</option>
+                        <option value="INGENIERIA INDUSTRIAL">INGENIERIA INDUSTRIAL</option>
+                        <option value="INGENIERIA QUIMICA">INGENIERIA QUIMICA</option>
+                        <option value="INGENIERIA ELECTRONICA">INGENIERIA ELECTRONICA</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col">
+                    <label class="col-5 col-form-label">Status</label>
+                    <select class="form-select" id="selectStatusPOST" aria-label="select">
+                        <option disable selected hidden>Selecciona una opcion</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Activo con 1 especial">Activo con 1 especial</option>
+                        <option value="Activo con especiales">Activo con especiales</option>
+                        <option value="Baja definitiva por alcanzar el número máximo semestres permitido">Baja
+                            definitiva por alcanzar el número máximo semestres permitido</option>
+                        <option value="Baja definitiva por examen especial reprobado">Baja definitiva por examen
+                            especial reprobado</option>
+                        <option value="Baja definitiva por no cumplir con requisito de inscripción">Baja
+                            definitiva por no cumplir con requisito de inscripción</option>
+                        <option value="Baja definitiva por no inscripción a segundo semestre">Baja definitiva
+                            por no inscripción a segundo semestre</option>
+                        <option value="Baja definitiva por reprobación en primer semestre">Baja definitiva por
+                            reprobación en primer semestre</option>
+                        <option value="Baja definitiva voluntaria">Baja definitiva voluntaria</option>
+                        <option value="Baja temporal por no inscripción">Baja temporal por no inscripción
+                        </option>
+                        <option value="Baja temporal voluntaria">Baja temporal voluntaria</option>
+                        <option value="Egresado">Egresado</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="col-4 col-form-label">Promedio</label>
+                    <input id="promedioInputPOST" class="form-control" type="number">
+                </div>
+                <div class="col">
+                    <label class="col-6 col-form-label">Semestre</label>
+                    <select class="form-select" id="selectSemestrePOST" aria-label="select">
+                        <option disable selected hidden>Selecciona una opcion</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mt-2 g-4 justify-content-end">
+                <button type="button" class="btn btn-dark w-25" onclick="agregarAlumno();">Agregar</button>
+            </div>
+        </div>
+
+        <div class="container tab-pane fade mt-3" id="pills-PUT" role="tabpanel" aria-labelledby="pills-PUT-tab">
+            <div class="row mb-2">
+                <h1>MODIFICAR ESTUDIANTE</h1>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-10">
+                    <div class="mb-3 row">
+                        <label class="col-sm-2 col-form-label">Id:</label>
+                        <div class="col-sm-10">
+                            <input type="number" class="form-control w-50" placeholder="Id del usuario"
+                                id="inputSearchIdPUT" max="9999" min="1">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-2">
+                    <button type="button" class="btn btn-dark w-100" onclick="cargarAlumno();">Buscar</button>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col">
+                    <label class="col-6 col-form-label">No. Control</label>
+                    <input id="noControlInputPUT" class="form-control" type="number">
+                </div>
+                <div class="col">
+                    <label class="col-4 col-form-label">Nombre(s)</label>
+                    <input id="nombreInputPUT" class="form-control" type="text">
+                </div>
+                <div class="col">
+                    <label class="col-6 col-form-label">Apellido paterno</label>
+                    <input id="paternoInputPUT" class="form-control" type="text">
+                </div>
+                <div class="col">
+                    <label class="col-7 col-form-label">Apellido materno</label>
+                    <input id="maternoInputPUT" class="form-control" type="text">
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col">
+                    <label class="col-6 col-form-label">Fecha de nacimiento</label>
+                    <input id="nacimientoInputPUT" class="form-control" type="date">
+                </div>
+                <div class="col">
+                    <label class="col-4 col-form-label">Carrera</label>
+                    <select class="form-select" id="selectCarreraPUT" aria-label="select">
+                        <option disable selected hidden>Selecciona una opcion</option>
+                        <option value="INGENIERIA CIVIL">INGENIERIA CIVIL</option>
+                        <option value="INGENIERIA EN GESTION EMPRESARIAL">INGENIERIA EN GESTION EMPRESARIAL
+                        </option>
+                        <option value="INGENIERIA MECANICA">INGENIERIA MECANICA</option>
+                        <option value="INGENIERIA EN SISTEMAS COMPUTACIONALES">INGENIERIA EN SISTEMAS
+                            COMPUTACIONALES</option>
+                        <option value="INGENIERIA ELECTRICA">INGENIERIA ELECTRICA</option>
+                        <option value="INGENIERIA INDUSTRIAL">INGENIERIA INDUSTRIAL</option>
+                        <option value="INGENIERIA QUIMICA">INGENIERIA QUIMICA</option>
+                        <option value="INGENIERIA ELECTRONICA">INGENIERIA ELECTRONICA</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col">
+                    <label class="col-5 col-form-label">Status</label>
+                    <select class="form-select" id="selectStatusPUT" aria-label="select">
+                        <option disable selected hidden>Selecciona una opcion</option>
+                        <option value="Activo">Activo</option>
+                        <option value="Activo con 1 especial">Activo con 1 especial</option>
+                        <option value="Activo con especiales">Activo con especiales</option>
+                        <option value="Baja definitiva por alcanzar el número máximo semestres permitido">Baja
+                            definitiva por alcanzar el número máximo semestres permitido</option>
+                        <option value="Baja definitiva por examen especial reprobado">Baja definitiva por examen
+                            especial reprobado</option>
+                        <option value="Baja definitiva por no cumplir con requisito de inscripción">Baja
+                            definitiva por no cumplir con requisito de inscripción</option>
+                        <option value="Baja definitiva por no inscripción a segundo semestre">Baja definitiva
+                            por no inscripción a segundo semestre</option>
+                        <option value="Baja definitiva por reprobación en primer semestre">Baja definitiva por
+                            reprobación en primer semestre</option>
+                        <option value="Baja definitiva voluntaria">Baja definitiva voluntaria</option>
+                        <option value="Baja temporal por no inscripción">Baja temporal por no inscripción
+                        </option>
+                        <option value="Baja temporal voluntaria">Baja temporal voluntaria</option>
+                        <option value="Egresado">Egresado</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label class="col-4 col-form-label">Promedio</label>
+                    <input id="promedioInputPUT" class="form-control" type="number">
+                </div>
+                <div class="col">
+                    <label class="col-6 col-form-label">Semestre</label>
+                    <select class="form-select" id="selectSemestrePUT" aria-label="select">
+                        <option disable selected hidden>Selecciona una opcion</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                        <option value="11">11</option>
+                        <option value="12">12</option>
+                        <option value="13">13</option>
+                        <option value="14">14</option>
+                        <option value="15">15</option>
+                        <option value="16">16</option>
+                        <option value="17">17</option>
+                        <option value="18">18</option>
+                        <option value="19">19</option>
+                        <option value="20">20</option>
+                        <option value="21">21</option>
+                        <option value="22">22</option>
+                        <option value="23">23</option>
+                        <option value="24">24</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mt-2 g-4 justify-content-end">
+                <button type="button" class="btn btn-dark w-25" onclick="guardarAlumno();">Guardar</button>
+            </div>
+        </div>
+
+        <div class="container tab-pane fade mt-3" id="pills-DELETE" role="tabpanel" aria-labelledby="pills-DELETE-tab">
+            <div class="row">
+                <div class="col-8">
+                    <h2>Alumnos registrados</h2>
+                </div>
+                <div class="col">
+                    <button type="button" class="btn btn-dark w-100" onclick="eliminarTodo();">Eliminar todo</button>
+                </div>
+            </div>
+            <table class="table table-striped table-hover mt-3" id="tablaTodosDelete">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">No. Control</th>
+                        <th scope="col">Nombre completo</th>
+                        <th scope="col">Nacimiento</th>
+                        <th scope="col">Carrera</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Promedio</th>
+                        <th scope="col">Creacion</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+        <div id="liveToast" class="toast hide text-white" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto" id="toastHeader">Error</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="bodyToast"></div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous">
+        </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="ClienteHTTP.js"></script>
+</body>
+
+<style>
+    #pills-tab .nav-link {
+        color: white;
+    }
+
+    #pills-tab .nav-link.active {
+        color: black;
+        background-color: rgb(255, 193, 7);
+    }
+</style>
+
+</html>
