@@ -1,33 +1,128 @@
-const express = require('express');
-const bodyParser = require("body-parser");
+const express = require("express"); 
+require("dotenv").config(); //variables de entorno
+const bodyParser = require("body-parser"); //aceptar en peticion el req.body
 const app = express();
-const { obtenerDatosExcel } = require('./student.controller.js');
+const PUERTO = process.env.API_PORT;
 
-const PORT = 9595;
 
-app.use(express.json());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+//paquetes para importar datos del excel npm i exceljs
+const ExcelJS = require('exceljs');
+const path = require('path');
+const filePath = path.resolve(__dirname, 'DATOS_ESTUDIANTES.xlsx');
+const libroExcel = new ExcelJS.Workbook();
+//route
+//base_url => localhost:PUERTO/ruta
 
-app.listen(PORT, () => {
-    console.log(`Server esta ejecutandose en puerto ${PORT}.`);
+app.get("/", (req, res) => {
+    res.send("Hola, Bienvenido");
 });
 
-const db = require("./index.js");
-
-db.sequelize.sync({ force: false }).then(() => {
-    // obtenerDatosExcel();
-    console.log("Eliminar y sincronizar db");
-})
-
-
-
-app.use((req, res, next) => {
+app.use((req, res, next) => { //permisos de cors
     res.header('Access-Control-Allow-Origin', '*');
-    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method, Access-Control-Request-Method');
+    res.header('Access-Control-Allow-Headers', 'Authorization, X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Allow-Request-Method');
     res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
     res.header('Allow', 'GET, POST, OPTIONS, PUT, DELETE');
     next();
 });
 
-require("./student.routes.js")(app);
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const sync = (process.env.MA_DB_SYNC === 'true');
+
+const db = require("./models/index.model.js");
+
+db.sequelize.sync({ alter: sync }).then(() => { //creacion de la bd
+    if (sync) {
+        console.log("Sincronizar db");
+    } else {
+        console.log("No se harán cambios a la db");
+    }
+});
+
+
+require("./routes/student.route.js")(app); //ruta
+require("./routes/studentcareer.route.js")(app);
+
+app.listen(PUERTO, (error) => {
+    if (error) throw error;
+    console.log("Escuchando por el puerto", PUERTO);
+});
+
+
+
+//LINEAS PARA IMPORTAR LOS DATOS A BD
+const StudentCareer = db.studentCareer;
+//obtenerDatosParaBD();
+//obtenerDatosParaBDNewTable();
+
+//funcion para extraer dato de estudiantes fecha 02/03/22
+function obtenerDatosParaBDNewTable() {
+    libroExcel.xlsx.readFile(filePath).then(function () {
+        var hoja = libroExcel.getWorksheet(1);
+        
+        for (let i = 2; i <= hoja.actualRowCount; i++) {
+            let alumno = {
+                nombre: hoja.getRow(i).getCell('A').value,
+                apePat: hoja.getRow(i).getCell('B').value,
+                apeMat: hoja.getRow(i).getCell('C').value,
+                noControl: hoja.getRow(i).getCell('D').value,
+                codCarrera: hoja.getRow(i).getCell('E').value,
+                semestre: hoja.getRow(i).getCell('F').value,
+                carrera: hoja.getRow(i).getCell('G').value,
+                especialidad: hoja.getRow(i).getCell('H').value,
+                codMateria: hoja.getRow(i).getCell('I').value,
+                nomMateria: hoja.getRow(i).getCell('J').value,
+                periodo: hoja.getRow(i).getCell('K').value,
+                calificacion: hoja.getRow(i).getCell('L').value,
+                tipoCalificacion: hoja.getRow(i).getCell('M').value,
+                descEvaluacion: hoja.getRow(i).getCell('N').value,
+                creditos: hoja.getRow(i).getCell('O').value,
+                ordenCertificado: hoja.getRow(i).getCell('P').value,
+                idStudent: hoja.getRow(i).getCell('Q').value
+            };
+            StudentCareer.create(alumno)
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+
+    }).catch(e => {
+        console.log(e);
+    });
+}
+
+//funcion para extraer dato de estudiantes ejercicio parcial 1
+function obtenerDatosParaBD() {
+    libroExcel.xlsx.readFile(filePath).then(function () {
+        var hoja = libroExcel.getWorksheet(1);
+        
+        for (let i = 4; i <= hoja.actualRowCount; i++) {
+            let alumno = {
+                noControl: hoja.getRow(i).getCell('C').value.toString(),
+                nombre: hoja.getRow(i).getCell('D').value,
+                apePat: hoja.getRow(i).getCell('E').value,
+                apeMat: hoja.getRow(i).getCell('F').value,
+                fechaNac: hoja.getRow(i).getCell('G').value,
+                carrera: hoja.getRow(i).getCell('H').value,
+                semestre: hoja.getRow(i).getCell('I').value,
+                estatusAlumno: hoja.getRow(i).getCell('J').value,
+                promedioCertificado: hoja.getRow(i).getCell('K').value,
+                fechaCreacion: hoja.getRow(i).getCell('L').value
+            };
+            Student.create(alumno)
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+        }
+
+    }).catch(e => {
+        console.log(e);
+    });
+}

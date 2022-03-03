@@ -1,35 +1,36 @@
 module.exports = (sequelize, Sequelize) => {
     const Student = sequelize.define("student", {
-        noControl: {
-            type: Sequelize.STRING
+        noControl:{
+            type : Sequelize.INTEGER
         },
         nombre: {
             type: Sequelize.STRING
-        }, 
-        paterno: {
+        },
+        apePat : {
+            type : Sequelize.STRING
+        },
+        apeMat :{
             type: Sequelize.STRING
         },
-        materno: {
-            type: Sequelize.STRING
-        },
-        nacimiento: {
-            type: Sequelize.DATEONLY
+        fechaNac :{
+            type: Sequelize.DATE
         },
         carrera: {
             type: Sequelize.STRING
         },
-        semestre: {
+        semestre :{
             type: Sequelize.INTEGER
         },
-        status: {
+        estatusAlumno:{
             type: Sequelize.STRING
         },
-        promedio: {
+        promedioCertificado:{
             type: Sequelize.DECIMAL
         },
-        creacion: {
-            type: Sequelize.DATEONLY
+        fechaCreacion:{
+            type: Sequelize.DATE
         }
     });
+
     return Student;
-};
+}
