@@ -53,8 +53,8 @@ app.listen(PUERTO, (error) => {
 
 //LINEAS PARA IMPORTAR LOS DATOS A BD
 const StudentCareer = db.studentCareer;
-//obtenerDatosParaBD();
-//obtenerDatosParaBDNewTable();
+obtenerDatosParaBD();
+obtenerDatosParaBDNewTable();
 
 //funcion para extraer dato de estudiantes fecha 02/03/22
 function obtenerDatosParaBDNewTable() {
