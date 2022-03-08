@@ -4,15 +4,11 @@ const bodyParser = require("body-parser"); //aceptar en peticion el req.body
 const app = express();
 const PUERTO = process.env.API_PORT;
 
-
 //paquetes para importar datos del excel npm i exceljs
 const ExcelJS = require('exceljs');
 const path = require('path');
 const filePath = path.resolve(__dirname, 'DATOS_ESTUDIANTES.xlsx');
 const libroExcel = new ExcelJS.Workbook();
-//route
-//base_url => localhost:PUERTO/ruta
-
 app.get("/", (req, res) => {
     res.send("Hola, Bienvenido");
 });
@@ -47,7 +43,6 @@ app.listen(PUERTO, (error) => {
     console.log("Escuchando por el puerto", PUERTO);
 });
 
-
 //LINEAS PARA IMPORTAR LOS DATOS A BD
 const StudentCareer = db.studentCareer;
 // obtenerDatosParaBDNewTable();
@@ -79,7 +74,7 @@ function obtenerDatosParaBDNewTable() {
             };
             StudentCareer.create(alumno)
                 .then(data => {
-                    console.log(data);
+                    // console.log(data);
                 })
                 .catch(err => {
                     console.log(err);
