@@ -1,25 +1,32 @@
 import logo from './logo.svg';
 import './App.css';
-import Button from './components/Button.component';
+import ButtonPDF from './components/fichaAlumno.component';
+import { Navbar, Container, Nav, Form, FormControl, Button } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-          <Button id="14160001"></Button>
-        </a>
-      </header>
+      <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+        <Container>
+          <Navbar.Brand href="#home">Historial acad&eacute;mico</Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Nav className="justify-content-end">
+            <Form className="d-flex">
+              <FormControl
+                type="search"
+                placeholder="Buscar"
+                className="me-2"
+                aria-label="Buscar"
+              />
+              <Button variant="warning">Buscar</Button>
+            </Form>
+          </Nav>
+        </Container>
+      </Navbar>
+      <Container>
+        <ButtonPDF id={2}></ButtonPDF>
+      </Container>
     </div>
   );
 }

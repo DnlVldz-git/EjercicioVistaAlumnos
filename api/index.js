@@ -40,8 +40,6 @@ db.sequelize.sync({ alter: sync }).then(() => { //creacion de la bd
     }
 });
 
-
-require("./routes/student.route.js")(app); //ruta
 require("./routes/studentcareer.route.js")(app);
 
 app.listen(PUERTO, (error) => {
@@ -50,11 +48,9 @@ app.listen(PUERTO, (error) => {
 });
 
 
-
 //LINEAS PARA IMPORTAR LOS DATOS A BD
 const StudentCareer = db.studentCareer;
-//obtenerDatosParaBD();
-//obtenerDatosParaBDNewTable();
+// obtenerDatosParaBDNewTable();
 
 //funcion para extraer dato de estudiantes fecha 02/03/22
 function obtenerDatosParaBDNewTable() {
@@ -82,38 +78,6 @@ function obtenerDatosParaBDNewTable() {
                 idStudent: hoja.getRow(i).getCell('Q').value
             };
             StudentCareer.create(alumno)
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        }
-
-    }).catch(e => {
-        console.log(e);
-    });
-}
-
-//funcion para extraer dato de estudiantes ejercicio parcial 1
-function obtenerDatosParaBD() {
-    libroExcel.xlsx.readFile(filePath).then(function () {
-        var hoja = libroExcel.getWorksheet(1);
-        
-        for (let i = 4; i <= hoja.actualRowCount; i++) {
-            let alumno = {
-                noControl: hoja.getRow(i).getCell('C').value.toString(),
-                nombre: hoja.getRow(i).getCell('D').value,
-                apePat: hoja.getRow(i).getCell('E').value,
-                apeMat: hoja.getRow(i).getCell('F').value,
-                fechaNac: hoja.getRow(i).getCell('G').value,
-                carrera: hoja.getRow(i).getCell('H').value,
-                semestre: hoja.getRow(i).getCell('I').value,
-                estatusAlumno: hoja.getRow(i).getCell('J').value,
-                promedioCertificado: hoja.getRow(i).getCell('K').value,
-                fechaCreacion: hoja.getRow(i).getCell('L').value
-            };
-            Student.create(alumno)
                 .then(data => {
                     console.log(data);
                 })

@@ -1,8 +1,9 @@
 import jsPDF from "jspdf";
 import EstudianteService from "../services/estudiante.service";
 import React, { useState, useEffect } from "react";
+import { Button } from "react-bootstrap";
 
-const Button = ({ id }) => {
+const ButtonPDF = ({ id }) => {
   const [datos, setDatos] = useState();
     
   useEffect(() => {
@@ -59,9 +60,9 @@ const Button = ({ id }) => {
 
   return (
     <div style={{ margin: "20px", fontFamily: "Roboto" }}>
-      <button onClick={pdf}> Generar xd</button>
+      <Button variant="success" onClick={pdf}>Generar PDF</Button>
     </div>
   );
 };
 
-export default Button;
+export default ButtonPDF;
