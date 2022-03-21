@@ -13,6 +13,7 @@ module.exports = {
     "dialectOptions": {
         "ssl": true
     },
+    
     pool: {
         max: 5,
         min: 0,

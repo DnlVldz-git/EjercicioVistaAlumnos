@@ -2,7 +2,7 @@ const express = require("express");
 require("dotenv").config(); //variables de entorno
 const bodyParser = require("body-parser"); //aceptar en peticion el req.body
 const app = express();
-const PUERTO = process.env.API_PORT;
+const PORT = process.env.PORT;
 
 //paquetes para importar datos del excel npm i exceljs
 const ExcelJS = require('exceljs');
@@ -38,9 +38,9 @@ db.sequelize.sync({ alter: sync }).then(() => { //creacion de la bd
 
 require("./routes/studentcareer.route.js")(app);
 
-app.listen(PUERTO, (error) => {
+app.listen(PORT, (error) => {
     if (error) throw error;
-    console.log("Escuchando por el puerto", PUERTO);
+    console.log("Escuchando por el puerto", PORT);
 });
 
 //LINEAS PARA IMPORTAR LOS DATOS A BD
