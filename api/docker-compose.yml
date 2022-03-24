@@ -2,5 +2,25 @@ version: "3"
 services: 
   app: 
     image: nodeserver
+    depends_on:
+      - db  
     ports: 
-      - "8080:9595"
+      - "8080:8080"    
+
+  db:
+    image: postgres-db2
+    restart: always
+    environment:      
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=docker        
+    ports:
+      - '5432:5432'    
+    # entrypoint: [ "psql", "-U postgres world < /home/proyecto/dump2.sql"] 
+    # command: bash -c "psql -U postgres" 
+  # dbsetup:
+  #   image: postgres-db2
+  #   depends_on:
+  #     - db
+  #   restart: "no"
+    
+  #   # world < /home/proyecto/dump2.sql

@@ -5,14 +5,14 @@ const pwd = process.env.MA_DB_PWD;
 const db = process.env.MA_DB_NAME;
 
 module.exports = {
-    HOST: host,
+    HOST: host,    
     USER: user,
     PASSWORD: pwd,
     DB: db,
     dialect: "postgres",
-    "dialectOptions": {
-        "ssl": true
-    },
+    // "dialectOptions": {
+    //     "ssl": true
+    // },
     
     pool: {
         max: 5,
